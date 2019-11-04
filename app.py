@@ -7,10 +7,10 @@ import plotly.figure_factory as ff
 import pandas as pd
 
 # Read in the USA counties shape files
-#from urllib.request import urlopen
-#import json
-# with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-#     counties = json.load(response)
+from urllib.request import urlopen
+import json
+with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+    counties = json.load(response)
 
 ########### Define a few variables ######
 
@@ -20,7 +20,7 @@ githublink = 'https://github.com/regina-avila/pr-deployment-map-ra'
 mapbox_access_token = open("assets/mytoken.mapbox_token").read()
 df = pd.read_csv('resources/hm_deploy_201808.csv', index_col='Unnamed: 0')
 #makes for a quicker run with fewer Properties
-varlist=['date', 'latitude', 'longitude', 'filename']
+varlist=[20180823, 20180824, 20180825]
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -34,7 +34,7 @@ app.title=tabtitle
 #NOw turn this into a function
 def myfunc(some_value):
     fig = go.Figure(go.Scattermapbox(
-        lat=df['lattitude'],
+        lat=df['latitude'],
         lon=df['longitude'],
         mode='markers',
         marker=go.scattermapbox.Marker(
@@ -48,7 +48,7 @@ def myfunc(some_value):
     )
     return fig
 
-app.layout.update(
+app.update_layout(
     autosize=True,
     hovermode='closest',
     mapbox=go.layout.Mapbox(
