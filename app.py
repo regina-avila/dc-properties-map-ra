@@ -14,14 +14,13 @@ import pandas as pd
 
 ########### Define a few variables ######
 
-tabtitle = 'DC Properties'
+tabtitle = 'PR Deployment'
 sourceurl = 'https://plot.ly/python/scattermapbox/'
-githublink = 'https://github.com/austinlasseter/dc-properties-map'
+githublink = 'https://github.com/regina-avila/pr-deployment-map-ra'
 mapbox_access_token = open("assets/mytoken.mapbox_token").read()
-df = pd.read_csv('resources/DC_Properties.csv', index_col='Unnamed: 0')
+df = pd.read_csv('resources/hm_deploy_201808.csv', index_col='Unnamed: 0')
 #makes for a quicker run with fewer Properties
-df = df.sample(500)
-varlist=['BATHRM', 'HF_BATHRM', 'ROOMS', 'BEDRM', 'STORIES',  'PRICE']
+varlist=['date', 'latitude', 'longitude', 'filename']
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -34,22 +33,22 @@ app.title=tabtitle
 #plotly reached out for built-in mapbox functions. lots of go.mapbox functions available. will require lattitude and LONGITUDE
 #NOw turn this into a function
 def myfunc(some_value):
-    passig = go.Figure(go.Scattermapbox(
-        lat=df['LATITUDE'],
-        lon=df['LONGITUDE'],
+    fig = go.Figure(go.Scattermapbox(
+        lat=df['lattitude'],
+        lon=df['longitude'],
         mode='markers',
         marker=go.scattermapbox.Marker(
             size=9,
             colorscale='grays',
             color=df[value]
         ),
-        text=df['ASSESSMENT_SUBNBHD']
+        text=df['date']
 
-    ))
-return fig
+        ),
+    )
+    return fig
 
-
-fig.update_layout(
+app.layout.update(
     autosize=True,
     hovermode='closest',
     mapbox=go.layout.Mapbox(
@@ -58,10 +57,10 @@ fig.update_layout(
 #gitignore - use this to ignore the filename with your token to hide it on github
         accesstoken=mapbox_access_token,
         bearing=0,
-#this centers on DC !
+#this centers on PR !
         center=go.layout.mapbox.Center(
-            lat=38.92,
-            lon=-77.07
+            lat=18.146,
+            lon=-66.235
         ),
         pitch=0,
         zoom=10
@@ -73,21 +72,21 @@ fig.update_layout(
 ########### Layout
 
 app.layout = html.Div(children=[
-    html.H1('DC Properties'),
+    html.H1('Puerto Rico Deployment Map'),
     # Dropdowns
     html.Div(children=[
         # left side
         html.Div([
-                html.H6('Select a variable for colorscale:'),
+                html.H6('Select a photo shoot date'),
                 dcc.Dropdown(
-                    id='stats-drop',
-                    options=[{'label': i, 'value': i} for i in varlist],
-                    value='Price'
+                    id='dates-drop',
+                    #options=[{'label': i, 'value': i} for i in varlist],
+                    value='date'
                 ),
         ], className='three columns'),
         # right side
         html.Div([
-            dcc.Graph(id='dc-map', figure=fig)
+            dcc.Graph(id='pr-map', figure=fig)
         ], className='nine columns'),
     ], className='twelve columns'),
 
@@ -100,8 +99,8 @@ app.layout = html.Div(children=[
 )
 
 ############ Callbacks
-@app.callback(Output('dc-map', 'figure'),
-             [Input('stats-drop', 'value')])
+@app.callback(Output('pr-map', 'figure'),
+             [Input('dates-drop', 'value')])
 def generate_map(dropdown_chosen_value):
     return make_my_cool_figure(dropdown_chosen_value)
 
