@@ -20,7 +20,9 @@ githublink = 'https://github.com/regina-avila/pr-deployment-map-ra'
 mapbox_access_token = open("assets/mytoken.mapbox_token").read()
 df = pd.read_csv('resources/hm_deploy_201808.csv', index_col='Unnamed: 0')
 #makes for a quicker run with fewer Properties
-varlist=[20180823, 20180824, 20180825]
+
+#this is the list of columns to choose from?
+varlist=['23 Aug 2018':20180823, '24 Aug 2018':20180824,'25 Aug 2018',20180825]
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -42,6 +44,7 @@ def myfunc(some_value):
             colorscale='grays',
             color=df[value]
         ),
+    #This pulls in the hover text for each plot point?
         text=df['date']
 
         ),
@@ -80,8 +83,8 @@ app.layout = html.Div(children=[
                 html.H6('Select a photo shoot date'),
                 dcc.Dropdown(
                     id='dates-drop',
-                    #options=[{'label': i, 'value': i} for i in varlist],
-                    value='date'
+                    options=[{'label': i, 'value': i} for i in varlist],
+                    value='20180823'
                 ),
         ], className='three columns'),
         # right side
