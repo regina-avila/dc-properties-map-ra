@@ -27,9 +27,6 @@ app.title=tabtitle
 ########## Figure
 #this function creates the mapbox using scattermapbox --
 # see 'https://plot.ly/python/scattermapbox/'
-#line 35 is causing an error
-# can't figure out how to pass specific lat longs
-#based on dropdown date selection
 
 def getPlots(value):
     df2 = df[df['date']==value]
@@ -38,7 +35,7 @@ def getPlots(value):
         lon=df2['longitude'],
         mode='markers',
         marker=go.scattermapbox.Marker(
-            size=6,
+            size=8,
 
         ),
 #This pulls in the hover text for each plot point
@@ -53,11 +50,11 @@ def getPlots(value):
                 bearing=0,
         #this centers on Puerto Rico where photos were shot
                 center=go.layout.mapbox.Center(
-                    lat=18.146,
-                    lon=-66.235
+                    lat=18.185,
+                    lon=-66.162
                 ),
                 pitch=0,
-                zoom=10
+                zoom=8
             ),
         )
     return fig
@@ -75,7 +72,7 @@ app.layout = html.Div(children=[
                 dcc.Dropdown(
                     id='dates-drop',
                     options=[{'label': i, 'value': i} for i in datelist],
-                    value=datelist[0]
+                    #value=datelist[0]
                 ),
         ], className='three columns'),
         #right side
@@ -93,7 +90,6 @@ app.layout = html.Div(children=[
 )
 
 # ############ Callbacks
-# if i include line 35 above I get a callback error
 #
 @app.callback(Output('pr-map', 'figure'),
              [Input('dates-drop', 'value')])
