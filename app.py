@@ -6,20 +6,17 @@ from dash.dependencies import Input, Output
 import pandas as pd
 
 
-########### Define a few variables ######
+########### Variables ######
 
 tabtitle = 'PR Deployment'
 sourceurl = 'https://plot.ly/python/scattermapbox/'
 githublink = 'https://github.com/regina-avila/pr-deployment-map-ra'
 mapbox_access_token = open("assets/mytoken.mapbox_token").read()
 df = pd.read_csv('resources/hm_deploy_201808.csv', index_col='Unnamed: 0')
-#makes for a quicker run with fewer Properties
 
-#this is the list of columns to choose from?
-
+#this is the list of dates to select for map plot points
 datelist=list(df['date'].value_counts().index)
 
-#where does this go???? df=df[df['date']==datelist[0]]
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -28,11 +25,14 @@ server = app.server
 app.title=tabtitle
 
 ########## Figure
-#this is a density mapbox. mapbox is a company that specializes in providing underlying maps for other startups to use in mapbuilding
-#plotly reached out for built-in mapbox functions. lots of go.mapbox functions available. will require lattitude and LONGITUDE
-#
+#this function creates the mapbox using scattermapbox --
+# see 'https://plot.ly/python/scattermapbox/'
+#line 35 is causing an error
+# can't figure out how to pass specific lat longs
+#based on dropdown date selection
+
 def getPlots(value):
-    df=df[df['date']==datelist[2]]
+    #df=df[df['date']==datelist[2]]
     fig = go.Figure(go.Scattermapbox(
         lat=df['latitude'],
         lon=df['longitude'],
@@ -41,7 +41,7 @@ def getPlots(value):
             size=6,
 
         ),
-    #This pulls in the hover text for each plot point
+#This pulls in the hover text for each plot point
         text=df['filename']
 
         ))
@@ -49,12 +49,9 @@ def getPlots(value):
             autosize=True,
             hovermode='closest',
             mapbox=go.layout.Mapbox(
-#must register for an access token on the mapbox website. this has to be saved. this one is in resources folder
-#mytoken.mapbox_access_token
-#gitignore - use this to ignore the filename with your token to hide it on github
                 accesstoken=mapbox_access_token,
                 bearing=0,
-        #this centers on PR !
+        #this centers on Puerto Rico where photos were shot
                 center=go.layout.mapbox.Center(
                     lat=18.146,
                     lon=-66.235
@@ -70,7 +67,7 @@ def getPlots(value):
 
 app.layout = html.Div(children=[
     html.H1('Puerto Rico Deployment Map'),
-    # DROPDOWNS
+    # dropdown layout
     html.Div(children=[
         # left side
         html.Div([
@@ -96,6 +93,8 @@ app.layout = html.Div(children=[
 )
 
 # ############ Callbacks
+# if i include line 35 above I get a callback error
+#
 @app.callback(Output('pr-map', 'figure'),
              [Input('dates-drop', 'value')])
 def generate_map(dropdown_chosen_value):
