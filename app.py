@@ -21,15 +21,17 @@ mapbox_access_token = open("assets/mytoken.mapbox_token").read()
 df = pd.read_csv('resources/hm_deploy_201808.csv', index_col='Unnamed: 0')
 #makes for a quicker run with fewer Properties
 
-#check what dates are
-#df['date'].value_counts().index
-#df['date'].value_counts().values
+# #check what dates are
+# df['date'].value_counts().index
+# df['date'].value_counts().values
 
 #this is the list of columns to choose from?
-var1={'23 Aug 2018':20180823}
-var2={'24 Aug 2018':20180824}
-var3={'25 Aug 2018':20180825}
-varlist=[var1,var2,var3]
+
+varlist=[
+        x for x in
+        df['date'].value_counts().index
+        ]
+firstVar = (varlist[1])
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -41,7 +43,7 @@ app.title=tabtitle
 #this is a density mapbox. mapbox is a company that specializes in providing underlying maps for other startups to use in mapbuilding
 #plotly reached out for built-in mapbox functions. lots of go.mapbox functions available. will require lattitude and LONGITUDE
 #NOw turn this into a function
-def getFig(value):
+def getPlots(value):
     fig = go.Figure(go.Scattermapbox(
         lat=df['latitude'],
         lon=df['longitude'],
@@ -91,9 +93,9 @@ app.layout = html.Div(children=[
                     #value=var1
                 ),
         ], className='three columns'),
-        # right side
-        html.Div([
-            dcc.Graph(id='pr-map', figure=getFig(20180823))
+        # #right side
+        # html.Div([
+        #     dcc.Graph(id='pr-map', figure=getPlots(firstVar))
         ], className='nine columns'),
     ], className='twelve columns'),
 
@@ -105,11 +107,11 @@ app.layout = html.Div(children=[
     ]
 )
 
-############ Callbacks
-@app.callback(Output('pr-map', 'figure'),
-             [Input('dates-drop', 'value')])
-def generate_map(dropdown_chosen_value):
-    return getFig(dropdown_chosen_value)
+# ############ Callbacks
+# @app.callback(Output('pr-map', 'figure'),
+#              [Input('dates-drop', 'value')])
+# def generate_map(dropdown_chosen_value):
+#     return getPlots(dropdown_chosen_value)
 
 
 ############ Deploy
