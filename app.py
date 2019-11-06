@@ -32,10 +32,10 @@ app.title=tabtitle
 #based on dropdown date selection
 
 def getPlots(value):
-    #df=df[df['date']==datelist[2]]
+    df2 = df[df['date']==value]
     fig = go.Figure(go.Scattermapbox(
-        lat=df['latitude'],
-        lon=df['longitude'],
+        lat=df2['latitude'],
+        lon=df2['longitude'],
         mode='markers',
         marker=go.scattermapbox.Marker(
             size=6,
